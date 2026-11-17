@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://sounds/typewriter_ding.wav" type="AudioStream" id=2]
-[ext_resource path="res://fonts/monospace.tres" type="DynamicFont" id=3]
+[ext_resource path="res://fonts/monospace.tres" type="FontFile" id=3]
 [ext_resource path="res://scenes/terminal.gd" type="Script" id=4]
 [ext_resource path="res://scenes/text_editor.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/tcp_server.tscn" type="PackedScene" id=6]
@@ -46,18 +46,18 @@ __meta__ = {
 }
 
 [node name="TopHalf" type="Control" parent="Rows"]
-margin_right = 1920.0
-margin_bottom = 1052.0
+offset_right = 1920.0
+offset_bottom = 1052.0
 size_flags_vertical = 3
 
 [node name="Output" type="RichTextLabel" parent="Rows/TopHalf"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -1.92206
-margin_bottom = -1.92212
+offset_top = -1.92206
+offset_bottom = -1.92212
 size_flags_vertical = 3
-custom_styles/normal = SubResource( 1 )
-custom_fonts/normal_font = ExtResource( 3 )
+theme_override_styles/normal = SubResource( 1 )
+theme_override_fonts/normal_font = ExtResource( 3 )
 scroll_following = true
 __meta__ = {
 "_edit_use_anchors_": false
@@ -67,7 +67,7 @@ __meta__ = {
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -34.0
+offset_top = -34.0
 columns = 2
 hide_root = true
 __meta__ = {
@@ -76,38 +76,38 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Rows"]
 visible = false
-margin_top = 984.0
-margin_right = 1920.0
-margin_bottom = 1052.0
+offset_top = 984.0
+offset_right = 1920.0
+offset_bottom = 1052.0
 
 [node name="Button" type="Button" parent="Rows/VBoxContainer"]
-margin_right = 1920.0
-margin_bottom = 20.0
+offset_right = 1920.0
+offset_bottom = 20.0
 text = "git commit --allow-empty -m \"$RANDOM\""
 script = SubResource( 2 )
 
 [node name="Button2" type="Button" parent="Rows/VBoxContainer"]
-margin_top = 24.0
-margin_right = 1920.0
-margin_bottom = 44.0
+offset_top = 24.0
+offset_right = 1920.0
+offset_bottom = 44.0
 text = "git checkout HEAD^"
 script = SubResource( 2 )
 
 [node name="Button3" type="Button" parent="Rows/VBoxContainer"]
-margin_top = 48.0
-margin_right = 1920.0
-margin_bottom = 68.0
+offset_top = 48.0
+offset_right = 1920.0
+offset_bottom = 68.0
 text = "git checkout -b \"$RANDOM\""
 script = SubResource( 2 )
 
 [node name="InputLine" type="HBoxContainer" parent="Rows"]
-margin_top = 1056.0
-margin_right = 1920.0
-margin_bottom = 1080.0
+offset_top = 1056.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 
 [node name="Input" type="LineEdit" parent="Rows/InputLine"]
-margin_right = 1920.0
-margin_bottom = 24.0
+offset_right = 1920.0
+offset_bottom = 24.0
 size_flags_horizontal = 3
 caret_blink = true
 __meta__ = {
@@ -117,25 +117,17 @@ __meta__ = {
 [node name="TextEditor" parent="." instance=ExtResource( 5 )]
 visible = false
 mouse_filter = 1
-syntax_highlighting = false
+syntax_highlighter = false
 
 [node name="TCPServer" parent="." instance=ExtResource( 6 )]
 
-[node name="Pager" type="WindowDialog" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 18.0
-margin_top = 39.0
-margin_right = -687.0
-margin_bottom = -48.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="Pager" type="PopupPanel" parent="."]
+visible = false
 
 [node name="Text" type="RichTextLabel" parent="Pager"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_fonts/normal_font = ExtResource( 3 )
+theme_override_fonts/normal_font = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -152,6 +144,6 @@ volume_db = -5.0
 [connection signal="pressed" from="Rows/VBoxContainer/Button2" to="Rows/VBoxContainer/Button2" method="pressed"]
 [connection signal="pressed" from="Rows/VBoxContainer/Button3" to="Rows/VBoxContainer/Button3" method="pressed"]
 [connection signal="text_changed" from="Rows/InputLine/Input" to="." method="_input_changed"]
-[connection signal="text_entered" from="Rows/InputLine/Input" to="." method="send_command"]
-[connection signal="saved" from="TextEditor" to="." method="editor_saved"]
+[connection signal="text_submitted" from="Rows/InputLine/Input" to="." method="send_command"]
+[connection signal="closed" from="TextEditor" to="." method="editor_closed"]
 [connection signal="data_received" from="TCPServer" to="." method="receive_output"]

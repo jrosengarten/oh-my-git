@@ -8,11 +8,10 @@ func _ready():
 		if args["sandbox"] is String:
 			if args["sandbox"] == ".":
 				args["sandbox"] = OS.get_environment("PWD")
-			var dir = Directory.new()
-			if dir.dir_exists(args["sandbox"]):
+			if DirAccess.dir_exists_absolute(args["sandbox"]):
 				path = args["sandbox"]
 			else:
-				helpers.crash("Directory %s does not exist" % args["sandbox"])
+				helpers.crash("DirAccess %s does not exist" % args["sandbox"])
 	
 	if path == null:
 		path = game.tmp_prefix+"/repos/sandbox/"
@@ -25,7 +24,6 @@ func _ready():
 	
 	$Columns/Repository.path = path
 
-	get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_2D, SceneTree.STRETCH_ASPECT_KEEP, Vector2(1920, 1080), 1.5)
 
 	$Columns/Terminal.repository = $Columns/Repository
 

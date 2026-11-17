@@ -1,5 +1,7 @@
 extends Node
 
+const ChapterScript = preload("res://scenes/chapter.gd")
+
 var chapters
 
 func _ready():
@@ -8,8 +10,7 @@ func _ready():
 func reload():
 	chapters = []
 	
-	var dir = Directory.new()
-	dir.open("res://levels")
+	var dir = DirAccess.open("res://levels")
 	dir.list_dir_begin()
 
 	var chapter_names = []
@@ -39,6 +40,6 @@ func reload():
 	#final_chapter_sequence += chapter_names
 	
 	for c in final_chapter_sequence:
-		var chapter = Chapter.new()
+		var chapter = ChapterScript.new()
 		chapter.load("res://levels/%s" % c)
 		chapters.push_back(chapter)

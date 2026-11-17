@@ -1,6 +1,8 @@
 extends Node
 class_name Chapter
 
+const LevelScript = preload("res://scenes/level.gd")
+
 var slug
 var levels
 
@@ -12,8 +14,7 @@ func load(path):
 	slug = parts[parts.size()-1]
 	
 	var level_names = []
-	var dir = Directory.new()
-	dir.open("res://levels/%s" % slug)
+	var dir = DirAccess.open("res://levels/%s" % slug)
 	dir.list_dir_begin()
 
 	while true:
@@ -41,7 +42,7 @@ func load(path):
 	#final_level_sequence += level_names
 	
 	for l in final_level_sequence:
-		var level = Level.new()
+		var level = LevelScript.new()
 		level.load("res://levels/%s/%s" % [slug, l])
 		levels.push_back(level)
 

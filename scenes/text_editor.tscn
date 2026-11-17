@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://fonts/default.tres" type="DynamicFont" id=1]
+[ext_resource path="res://fonts/default.tres" type="FontFile" id=1]
 [ext_resource path="res://scenes/text_editor.gd" type="Script" id=2]
 
 [node name="TextEditor" type="TextEdit" groups=[
@@ -8,9 +8,9 @@
 ]]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_colors/background_color = Color( 0, 0, 0, 1 )
+theme_override_colors/background_color = Color( 0, 0, 0, 1 )
 text = "Text here"
-syntax_highlighting = true
+syntax_highlighter = true
 wrap_enabled = true
 script = ExtResource( 2 )
 __meta__ = {
@@ -22,13 +22,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -114.396
-margin_top = -59.399
-margin_right = -14.3955
-margin_bottom = -14.399
+offset_left = -114.396
+offset_top = -59.399
+offset_right = -14.3955
+offset_bottom = -14.399
 focus_mode = 0
-custom_fonts/font = ExtResource( 1 )
-enabled_focus_mode = 0
+theme_override_fonts/font = ExtResource( 1 )
+focus_mode = 0
 text = "Save"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -37,13 +37,13 @@ __meta__ = {
 [node name="CloseButton" type="Button" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -54.3247
-margin_top = 12.0
-margin_right = -14.3247
-margin_bottom = 52.0
+offset_left = -54.3247
+offset_top = 12.0
+offset_right = -14.3247
+offset_bottom = 52.0
 focus_mode = 0
-custom_fonts/font = ExtResource( 1 )
-enabled_focus_mode = 0
+theme_override_fonts/font = ExtResource( 1 )
+focus_mode = 0
 text = "x"
 __meta__ = {
 "_edit_use_anchors_": false

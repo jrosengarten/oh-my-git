@@ -25,7 +25,7 @@ If something doesn't work or looks broken, please let us know! You can describe 
 
 Wanna build your own level? Great! Here's how to do it:
 
-1. Download the latest version of the [Godot **3** game engine](https://godotengine.org/download/3.x). Godot 4 is not supported yet.
+1. Download the latest version of the [Godot **4** game engine](https://godotengine.org/download/).
 1. Clone this repository.
 1. Run the game – the easiest way to do so is to run `godot scenes/main.tscn` from the project directory.
 1. Get a bit familiar with the levels which are currently there.
@@ -86,7 +86,7 @@ To open the game in the [Godot editor](https://godotengine.org), run `godot proj
 
 Feel free to make improvements to the code and send pull requests! There is one exception: because merge conflicts in Godot's scene files tends to be hard to resolve, before working on an existing *\*.tscn* file, please get in touch with us.
 
-To build your own binaries, you'll need Godot's [export templates](https://docs.godotengine.org/en/stable/getting_started/workflow/export/exporting_projects.html), and `zip`, `wget`, and `7z`. Then, run `make`. On Debian/Ubuntu, the Godot binary is called `godot3`, you might need to adjust the paths in the Makefile.
+To build your own binaries, you'll need Godot's [export templates](https://docs.godotengine.org/en/stable/getting_started/workflow/export/exporting_projects.html), and `zip`, `wget`, and `7z`. Then, run `make`. On Debian/Ubuntu, the Godot binary may have a versioned name; adjust the paths in the Makefile if needed.
 
 ## Code of Conduct
 

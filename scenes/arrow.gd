@@ -1,8 +1,8 @@
 extends Node2D
 
 var source: String
-var target: String setget set_target
-var color = Color("333333") setget set_color
+var target: String: set = set_target
+var color = Color("333333"): set = set_color
 
 var repository: Control
 
@@ -32,13 +32,12 @@ func _process(_delta):
 	if $Target.text.substr(0, 5) != "refs/" or repository.objects.has(target):
 		$Target.text = ""
 
-	$Line.points[0] = start - parent_position
-	$Line.points[1] = end - parent_position
-
-	#$Line.points[0] += ($Line.points[1] - $Line.points[0]).normalized()*30
-	$Line.points[1] -= ($Line.points[1] - $Line.points[0]).normalized()*30
-	$Tip.position = $Line.points[1]
-	$Tip.rotation = PI + atan2($Line.points[0].y - $Line.points[1].y, $Line.points[0].x - $Line.points[1].x)
+	var line_start = start - parent_position
+	var line_end = end - parent_position - (end - start).normalized() * 30
+	$Line.set_point_position(0, line_start)
+	$Line.set_point_position(1, line_end)
+	$Tip.position = line_end
+	$Tip.rotation = (line_end - line_start).angle()
 
 func set_color(new_color):
 	color = new_color

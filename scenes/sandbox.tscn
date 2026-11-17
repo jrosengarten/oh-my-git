@@ -26,10 +26,10 @@ __meta__ = {
 [node name="Columns" type="HSplitContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 5.0
-margin_right = -5.0
-margin_bottom = -5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -37,15 +37,15 @@ __meta__ = {
 [node name="Repository" parent="Columns" instance=ExtResource( 2 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 949.0
-margin_bottom = 1070.0
+offset_right = 949.0
+offset_bottom = 1070.0
 size_flags_horizontal = 3
 
 [node name="Terminal" parent="Columns" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 961.0
-margin_right = 1910.0
-margin_bottom = 1070.0
+offset_left = 961.0
+offset_right = 1910.0
+offset_bottom = 1070.0
 size_flags_horizontal = 3
-[connection signal="command_done" from="Columns/Terminal" to="." method="update_repo"]
+[connection signal="command_completed" from="Columns/Terminal" to="." method="update_repo"]

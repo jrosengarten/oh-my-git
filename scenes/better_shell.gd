@@ -1,6 +1,8 @@
 extends Node
 class_name BetterShell
 
+const ShellCommandScript = preload("res://scenes/shell_command.gd")
+
 var exit_code
 
 var _cwd
@@ -18,7 +20,7 @@ func cd(dir):
 # Run a shell command given as a string. Run this if you're interested in the
 # output of the command.
 func run(command, crash_on_fail=true):
-	var shell_command = ShellCommand.new()
+	var shell_command = ShellCommandScript.new()
 	shell_command.command = command
 	shell_command.crash_on_fail = crash_on_fail
 	
@@ -27,13 +29,13 @@ func run(command, crash_on_fail=true):
 	return shell_command.output
 
 func run_async(command, crash_on_fail=true):
-	var shell_command = ShellCommand.new()
+	var shell_command = ShellCommandScript.new()
 	shell_command.command = command
 	shell_command.crash_on_fail = crash_on_fail
 	
 	var t = Thread.new()
 	shell_command.thread = t
-	t.start(self, "run_async_thread", shell_command)
+	t.start(Callable(self, "run_async_thread").bind(shell_command))
 	
 	return shell_command
 	
@@ -67,7 +69,7 @@ func run_async_thread(shell_command):
 	shell_command.emit_signal("done")
 	
 func _shell_binary():
-	if _os == "X11" or _os == "OSX":
+	if _os == "Linux" or _os == "macOS":
 		return "bash"
 	elif _os == "Windows":
 		return "dependencies\\windows\\git\\bin\\bash.exe"

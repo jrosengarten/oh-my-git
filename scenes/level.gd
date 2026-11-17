@@ -1,6 +1,8 @@
 extends Node
 class_name Level
 
+const LevelRepoScript = preload("res://scenes/level_repo.gd")
+
 var slug
 var title
 var description
@@ -15,8 +17,7 @@ func load(path):
 	var parts = path.split("/")
 	slug = parts[parts.size()-1]
 	
-	var dir = Directory.new()
-	if dir.file_exists(path):
+	if FileAccess.file_exists(path):
 		# This is a new-style level.
 		var config = helpers.parse(path)
 		
@@ -68,7 +69,7 @@ func load(path):
 			else:
 				repo = "yours"
 			if not repos.has(repo):
-				repos[repo] = LevelRepo.new()
+				repos[repo] = LevelRepoScript.new()
 			repos[repo].setup_commands = config[k]
 		
 		for k in repo_wins:

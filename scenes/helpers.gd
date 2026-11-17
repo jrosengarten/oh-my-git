@@ -7,9 +7,6 @@ func crash(message):
 	push_error(message)
 	print("FATAL ERROR: " + message)
 	get_tree().quit()
-	# Oh, still here? Let's crash more violently, by calling a non-existing method.
-	# Violent delights have violent ends.
-	get_tree().fatal_error()
 
 func map(array, object, f):
 	var new_array = []
@@ -22,33 +19,30 @@ func exec(command, args=[], crash_on_fail=true):
 	var debug = false
 	
 	if debug:
-		print("exec: %s [%s]" % [command, PoolStringArray(args).join(", ")])
+		print("exec: %s [%s]" % [command, ", ".join(PackedStringArray(args))])
 		
 	var output = []
-	var exit_code = OS.execute(command, args, true, output, true)
-	output = output[0]
+	var exit_code = OS.execute(command, args, output, true, true)
+	output = output[0] if output.size() > 0 else ""
 		
 	if exit_code != 0 and crash_on_fail:
-		helpers.crash("OS.execute failed: %s [%s] Output: %s \nExit Code %d" % [command, PoolStringArray(args).join(", "), output, exit_code])
+		helpers.crash("OS.execute failed: %s [%s] Output: %s \nExit Code %d" % [command, ", ".join(PackedStringArray(args)), output, exit_code])
 	elif debug:
 		print("Output: %s" %output)
 
 	return {"output": output, "exit_code": exit_code}
 
 func exec_async(command, args=[]):
-	OS.execute(command, args, false)
+	OS.execute(command, args, [], false, true)
 
 # Return the contents of a file. If no fallback_string is provided, crash when
 # the file doesn't exist.
 func read_file(path, fallback_string=null):
 	if debug_file_io:
 		print("reading " + path)
-	var file = File.new()
-	var open_status = file.open(path, File.READ)
-	if open_status == OK:
-		var content = file.get_as_text()
-		file.close()
-		return content
+	var file = FileAccess.open(path, FileAccess.READ)
+	if file:
+		return file.get_as_text()
 	else:
 		if fallback_string != null:
 			return fallback_string
@@ -62,15 +56,12 @@ func write_file(path, content):
 	# Create the base directory of the file, if it doesn't exist.
 	var parts = Array(path.split("/"))
 	parts.pop_back()
-	var dirname = PoolStringArray(parts).join("/")
-	var dir = Directory.new()
-	if not dir.dir_exists(path):
-		dir.make_dir_recursive(dirname)
+	var dirname = "/".join(PackedStringArray(parts))
+	if not DirAccess.dir_exists_absolute(path):
+		DirAccess.make_dir_recursive_absolute(dirname)
 		
-	var file = File.new()
-	file.open(path, File.WRITE)
+	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(content)
-	file.close()
 	return true
 
 func parse_args():

@@ -1,11 +1,13 @@
 extends Node
 
+const ShellCommandScript = preload("res://scenes/shell_command.gd")
+
 signal data_received(string)
 signal new_connection
 
-export var port: int
+@export var port: int
 
-var _s = TCP_Server.new()
+var _s = TCPServer.new()
 var _c
 var _connected = false
 
@@ -41,7 +43,7 @@ func send(text):
 		var response = _c.get_utf8_string()
 		var exit_code = _c.get_u32()
 		
-		var shell_command = ShellCommand.new()
+		var shell_command = ShellCommandScript.new()
 		shell_command.command = text
 		shell_command.output = response
 		#print("response:")

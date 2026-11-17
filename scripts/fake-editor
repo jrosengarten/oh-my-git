@@ -1,40 +1,43 @@
 #!/usr/bin/env perl
 
-use IO::Socket;
-use File::Spec;
+use strict;
+use warnings;
+use IO::Socket::INET;
 
-$socket = IO::Socket::INET->new(PeerAddr => "127.0.0.1",
-                                PeerPort => 1234,
-                                Proto    => "tcp",
-                                Type     => SOCK_STREAM);
+my $port = $ENV{OH_MY_GIT_EDITOR_PORT};
+die "Oh My Git editor has no listening port\n" unless $port && $port =~ /^\d+$/;
+my $path = $ARGV[0] // die "No file was given to the Oh My Git editor\n";
 
-my $absolute_path = File::Spec->rel2abs($ARGV[0]);
+open my $input, '<:raw', $path or die "Cannot read $path: $!\n";
+my $content = do { local $/; <$input> } // '';
+close $input;
 
-# Send the length of the first argument as four bytes.
-$socket->send(pack("L", length($absolute_path)));
-# Send the first argument as a string.
-$socket->send($absolute_path);
+my $socket = IO::Socket::INET->new(
+    PeerAddr => '127.0.0.1',
+    PeerPort => $port,
+    Proto    => 'tcp',
+) or die "Cannot connect to the Oh My Git editor: $!\n";
+binmode $socket, ':raw';
+$socket->autoflush(1);
+print {$socket} pack('V', length($content)), $content
+    or die "Cannot send the file to the Oh My Git editor: $!\n";
 
-# Get and send the content of the file, prefixed by its length.
-my $content = do{local(@ARGV,$/)=$absolute_path;<>};
-$socket->send(pack("L", length($content)));
-$socket->send($content);
+my $header = read_exact($socket, 4);
+exit 1 unless defined $header;  # Closing the editor cancels the Git operation.
+my $result = read_exact($socket, unpack('V', $header));
+die "Incomplete response from the Oh My Git editor\n" unless defined $result;
 
-# Get size of written content. This blocks until the players hits save or close.
-my $length_str;
-$socket->recv($length_str, 4);
-my $length = unpack("L", $length_str);
-my $new_content = "";
-$socket->recv($new_content, $length);
+open my $output, '>:raw', $path or die "Cannot write $path: $!\n";
+print {$output} $result or die "Cannot write $path: $!\n";
+close $output or die "Cannot close $path: $!\n";
 
-# Write content back into the file.
-if ($new_content =~ /^s/) {
-    my $handle;
-    open ($handle,'>',$absolute_path) or die("Error opening file");
-    print $handle (substr $new_content, 1);
-    close ($handle) or die ("Error closing file");
+sub read_exact {
+    my ($stream, $length) = @_;
+    my $bytes = '';
+    while (length($bytes) < $length) {
+        my $read = read($stream, $bytes, $length - length($bytes), length($bytes));
+        die "Cannot read from the Oh My Git editor: $!\n" unless defined $read;
+        return undef if $read == 0;
+    }
+    return $bytes;
 }
-
-# This call is intended to block, we're waiting for Godot to close the connection.
-my $reply;
-$socket->read($reply, 1000);
